@@ -1,5 +1,11 @@
+################
+######### IMPORT
+################
+
 from audioop import avg
+from cgi import print_form
 from collections import Counter
+from collections import defaultdict
 
 ################
 # DATA
@@ -21,14 +27,12 @@ users = [
 friendship_pairs = [(0, 1), (0, 2), (1, 2), (1, 3), (2, 3),
                     (3, 4), (4, 5), (5, 6), (5, 7), (6, 8), (7, 8), (8, 9)]
 
-
-interests = {
-    (0, "Hdoop"), (0, "Big Data"), (0, "HBase"), (0, "Java"),
+interests = [(0, "Hdoop"), (0, "Big Data"), (0, "HBase"), (0, "Java"),
     (0, "Spark"), (0, "Storm"), (0, "Cassandra"),
     (1, "NoSQL"), (1, "MongoDB"), (1, "Cassandra"), (1, "HBase"),
-    (1, "Postgres"), (2, "Python"), (2, "scikit-learn"), (2, "scipy")
+    (1, "Postgres"), (2, "Python"), (2, "scikit-learn"), (2, "scipy"),
     (2, "numpy"), (2, "statsmodel"), (2, "pandas"), (3, "R"), (3, "Python"),
-    (3, "statistics"), (3, "regression"), (3, "probability")
+    (3, "statistics"), (3, "regression"), (3, "probability"),
     (4, "machine learning"), (4, "regression"), (4, "decision trees"),
     (4, "libsvm"), (5, "Python"), (5, "R"), (5, "Java"), (5, "C++"),
     (5, "Haskell"), (5, "programming languages"), (6, "statistics"),
@@ -36,10 +40,10 @@ interests = {
     (7, "machine learnig"), (7, "scikit-learn"), (7, "Mahout"),
     (7, "neural networks"), (8, "neural networks"), (8, "deep learning"),
     (8, "Big Data"), (8, "artificial intelligence"), (9, "Hadoop"),
-    (9, "Java"), (9, "MapReduce"), (9, "BigData")
-}
+    (9, "Java"), (9, "MapReduce"), (9, "BigData")]
+    
 ################
-# FUNCTIONS
+###### FUNCTIONS
 ################
 
 
@@ -68,8 +72,23 @@ def friends_of_friends(user):
         and foaf_id not in friendships[user_id]
     )
 
+def data_scientists_who_like(target_interest):
+    """Encontre os ids dos usuarios com o mesmo interesse."""
+    return [user_id
+            for user_id, user_interest in interests
+            if user_interest == target_interest]
+
+def most_commom_interests_with(user):
+    """Determina quem tem mais interesses em comum com o usuário."""
+    return Counter(
+        interested_user_id
+        for interest in interests_by_user_id[user["id"]]
+        for interested_user_id in user_ids_by_interest[interest]
+        if interested_user_id != user["id"]
+    )
+
 ################
-# LOGIC
+########## LOGIC
 ################
 
 
@@ -107,3 +126,22 @@ print("Encontrado os amigos de amigos com exclusão de repetidos\n",
 
 print("Encontrado os amigos de amigos com exclusão de repetidos\n",
       "Buscando foaf de Chi", friends_of_friends(users[4]))
+
+print("Criando lista de interesses dos usuários")
+# as chaves são interesses, os valores são listas de user_ids com o interesse em questão
+user_ids_by_interest = defaultdict(list) 
+
+for user_id, interest in interests:
+    user_ids_by_interest[interest].append(user_id)
+
+# As chaves ~sao user_ids, os valores são listas de interesses
+interests_by_user_id = defaultdict(list)
+
+for user_id, interest in interests:
+    interests_by_user_id[user_id].append(interest)
+    
+print("Quantidade de usuarios com interesse em comum em pandas:\n",data_scientists_who_like("pandas"))
+print("Quantidade de usuarios com interesse em comum em machine learning:\n",data_scientists_who_like("machine learning"))
+
+print("Qual usuário tem mais interesses com o usuario Clive:\n", most_commom_interests_with(users[6]))
+print("Qual usuário tem mais interesses com o usuario Klein:\n", most_commom_interests_with(users[9]))
