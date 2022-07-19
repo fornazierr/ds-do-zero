@@ -42,6 +42,11 @@ interests = [(0, "Hdoop"), (0, "Big Data"), (0, "HBase"), (0, "Java"),
     (8, "Big Data"), (8, "artificial intelligence"), (9, "Hadoop"),
     (9, "Java"), (9, "MapReduce"), (9, "BigData")]
     
+salaries_and_tenures =[(83000, 8.7), (88000, 8.1),
+                       (48000, 0.7), (76000, 6),
+                       (69000, 6.5), (76000, 7.5),
+                       (60000, 2.5), (83000, 10),
+                       (48000, 1.9), (63000, 4.2)]
 ################
 ###### FUNCTIONS
 ################
@@ -86,6 +91,16 @@ def most_commom_interests_with(user):
         for interested_user_id in user_ids_by_interest[interest]
         if interested_user_id != user["id"]
     )
+
+def tenure_bucket(tenure):
+    """Informa a esperiência """
+    if tenure < 2:
+        return "less than two"
+    elif tenure < 5:
+        return "between two and five"
+    else:
+        return "more than five"
+    
 
 ################
 ########## LOGIC
@@ -145,3 +160,35 @@ print("Quantidade de usuarios com interesse em comum em machine learning:\n",dat
 
 print("Qual usuário tem mais interesses com o usuario Clive:\n", most_commom_interests_with(users[6]))
 print("Qual usuário tem mais interesses com o usuario Klein:\n", most_commom_interests_with(users[9]))
+
+print("Analise de média salarial")
+
+#As chaves são os anos, os valores são listas de salarios por anos de experiência
+salary_by_tenure = defaultdict(list)
+
+for salary, tenure in salaries_and_tenures:
+    salary_by_tenure[tenure].append(salary)
+
+# as chaves são anos, cada valor é o salário médio associado ao numero de anos de experiência
+average_salary_by_tenure = {
+    tenure: sum(salaries) / len(salaries)
+    for tenure, salaries in salary_by_tenure.items()
+}
+
+print("Média de salário por anos:\n", average_salary_by_tenure)
+
+#as chaves são buckets de anos de experiência, os valores são listas de salários associadas ao bucket em questão
+salary_by_tenure_bucket = defaultdict(list)
+
+for salary, tenure in salaries_and_tenures:
+    bucket = tenure_bucket(tenure)
+    salary_by_tenure_bucket[bucket].append(salary)
+
+# Computando a media salarial de cada grupo
+# as chaves são buckets de anos de experiêcia, os valores são a médoa salarial do bucket em questão
+average_salary_by_bucket = {
+    tenure_bucket: sum(salaries) / len(salaries)
+    for tenure_bucket, salaries in salary_by_tenure_bucket.items()
+}  
+
+print("Média salarial por anos de experiência:\n", average_salary_by_bucket)
