@@ -100,7 +100,15 @@ def tenure_bucket(tenure):
         return "between two and five"
     else:
         return "more than five"
-    
+
+def predict_paid_or_unpaid(years_experience):
+    """Prediz se foi pago ou não baseado na experiência do usuário"""
+    if years_experience < 3.0:
+        return "paid"
+    elif years_experience <8.5:
+        return "unpaid"
+    else:
+        return "paid"
 
 ################
 ########## LOGIC
@@ -192,3 +200,14 @@ average_salary_by_bucket = {
 }  
 
 print("Média salarial por anos de experiência:\n", average_salary_by_bucket)
+
+# Explorando as possibilidades de extração de dados a partir do interesse dos usuários
+words_and_counts = Counter(word
+                           for user, interest in interests
+                           for word in interest.lower().split())
+
+print("Imprimindo resultado de tópicos de maior interesse")
+for word, count in words_and_counts.most_common():
+    if count > 1:
+        print(word,count)
+
