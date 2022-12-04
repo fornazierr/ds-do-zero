@@ -99,3 +99,67 @@ if "retweet_count" in tweet:
         print("Já é famoso, pode pedir recebidinhos")
     else:
         print("Sozinho mas bem =)")
+
+# Classificacao
+
+minha_lista_x = [23,22,109,1,67,29,3,6,7,32,34,31,78,5]
+print("Minha lista X: ", x)
+y = sorted(x)
+print("Sorteando e gravando em variável: ", y)
+
+# Compreensões de listas
+valores_pares = [x for x in range(13) if x % 2 == 0]
+print("Valores pares de X:", valores_pares)
+ao_quadrado = [x * x for x in range(13)]
+print("Valores ao quadrado de X: ", ao_quadrado)
+valores_impares = [x for x in range(13) if x % 2 != 0]
+print("Valores impares de X:", valores_impares)
+
+# Transformando em dicionarios
+ao_quadrado_dict = {x: x * x for x in range (10)}
+print("Dicionário de X:", ao_quadrado_dict)
+
+# Teste automatizados e asserção
+#uma boa pratica é adicionar à funções como abaixo
+
+def menor_numero(xs):
+    return min(xs)
+
+assert menor_numero([10,20,4,40]) == 4
+assert menor_numero([-1,-5,0,2,3]) == -5
+
+#POO
+class CountingClicker:
+    """Classe contadora de Cliques"""
+    
+    count = 0
+    
+    def __init__(self, count = 0):
+        self.count = count
+    
+    def _repr_(self):
+        return f"CountingClicker(count={self.count})"
+    
+    def click(self, cliques=1):
+        """Clique no contador"""
+        self.count += cliques
+    
+    def read(self):
+        return self.count
+    
+    def reset(self):
+        self.count = 0
+
+#Iniciando as variaveis
+clicker1 = CountingClicker()
+clicker2 = CountingClicker(100)
+clicker3 = CountingClicker(count=100)
+
+#Usando o assert
+clicker = CountingClicker()
+assert clicker.read() == 0, "clicker should start with count 0"
+clicker.click()
+clicker.click()
+assert clicker.read() == 2, "clicker should have count 2"
+clicker.reset()
+assert clicker.read() == 0, "clicker should have count 0"
